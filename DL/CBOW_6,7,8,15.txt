@@ -1,0 +1,85 @@
+import string
+from tensorflow.keras.preprocessing.text import Tokenizer
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from tensorflow.keras.layers import Embedding,Lambda,Dense
+from tensorflow.keras.models import Sequential
+import tensorflow as tf
+import seaborn as sns
+
+
+text="""
+The speed of transmission is an important point of difference between the two viruses. Influenza has a shorter median incubation period (the time from infection to appearance of symptoms) and a shorter serial interval (the time between successive cases) than COVID-19 virus. The serial interval for COVID-19 virus is estimated to be 5-6 days, while for influenza virus, the serial interval is 3 days. This means that influenza can spread faster than COVID-19. 
+
+Further, transmission in the first 3-5 days of illness, or potentially pre-symptomatic transmission –transmission of the virus before the appearance of symptoms – is a major driver of transmission for influenza. In contrast, while we are learning that there are people who can shed COVID-19 virus 24-48 hours prior to symptom onset, at present, this does not appear to be a major driver of transmission. 
+
+The reproductive number – the number of secondary infections generated from one infected individual – is understood to be between 2 and 2.5 for COVID-19 virus, higher than for influenza. However, estimates for both COVID-19 and influenza viruses are very context and time-specific, making direct comparisons more difficult.  
+
+"""
+dl_data=text.split()
+print(dl_data)
+
+text_data = [word.translate(str.maketrans('', '', string.punctuation)) for word in dl_data]
+text_data=[word.lower() for word in text_data]
+#print(text_data)
+
+tk=Tokenizer()
+tk.fit_on_texts(text_data)
+w2idx=tk.word_index
+idx2w={v:k for k,v in w2idx.items()}
+#print(w2idx)
+#print(idx2w)
+
+sentence=[w2idx.get(w) for w in text_data]
+#print(sentence)
+
+target=[]
+context=[]
+context_size=2
+emd_size=10
+vocab_size=len(w2idx)+1
+
+for i in range(context_size,len(sentence)-context_size):
+    target.append(sentence[i])
+    temp=sentence[i-context_size:i]+sentence[i+1:i+1+context_size]
+    context.append(temp)
+#print(target)
+#print(context)
+
+
+x=np.array(context)
+y=np.array(target)
+#print(x)
+#print(y)
+
+
+model=Sequential([
+  Embedding(input_dim=vocab_size,output_dim=emd_size,input_length=2*context_size),
+  Lambda(lambda x:tf.reduce_mean(x,axis=1)),
+  Dense(256,activation='relu'),
+  Dense(512,activation='relu'),
+  Dense(vocab_size,activation='softmax')
+])
+
+model.summary()
+
+model.compile(optimizer='adam',metrics=['accuracy'],loss=tf.keras.losses.SparseCategoricalCrossentropy)
+
+model.fit(x,y,epochs=100)
+
+
+sns.lineplot(model.history.history)
+
+test=['is','an','point','of']
+temp=[]
+
+for t in test:
+    ind=w2idx.get(t)
+    temp.append(ind)
+inp=np.array([temp])
+pred=model.predict(inp)
+print(pred)
+print(pred.argmax())
+
+print(idx2w.get(pred.argmax()))

@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
+from sklearn.model_selection import train_test_split
+
+df=pd.read_csv('ecg_autoencoder_dataset.csv',header=None)
+df.head()
+df.shape
+df.count().isnull()
+
+feature=df.drop(140,axis=1)
+feature.head()
+
+target=df[140]
+target.head()
+
+scalar=StandardScaler()
+featurescaled=scalar.fit_transform(feature)
+
+xtrain,xtest,ytrain,ytest=train_test_split(featurescaled,target,test_size=0.2,random_state=40,stratify=target)
+
+input1=xtrain.shape[1]
+print(input1)
+inputl=Input(shape=input1,)
+encoder=Dense(64,activation='relu')(inputl)
+encoder=Dense(32,activation='relu')(encoder)
+encoder=Dense(16,activation='relu')(encoder)
+encoder=Dense(8,activation='relu')(encoder)
+
+decoder=Dense(16,activation='relu')(encoder)
+decoder=Dense(32,activation='relu')(decoder)
+decoder=Dense(64,activation='relu')(decoder)
+decoder=Dense(input1,activation='sigmoid')(decoder)
+
+autoencoder=Model(inputs=inputl, outputs=decoder)
+autoencoder.compile(optimizer='adam',metrics=['accuracy'],loss='mse')
+history=autoencoder.fit(xtrain,xtrain,epochs=20,batch_size=32,validation_data=(xtest,xtest),shuffle=True)
+
+reconstruct=autoencoder.predict(xtest)
+mse=np.mean(np.power(xtest-reconstruct,2),axis=1)
+
+threshold=mse.mean()+3*mse.std()
+
+anomaly=mse>threshold
+print(np.sum(anomaly))

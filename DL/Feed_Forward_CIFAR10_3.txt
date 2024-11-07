@@ -1,0 +1,50 @@
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.metrics import classification_report
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.datasets import cifar10
+from tensorflow.keras import backend as K
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load training and testing data
+((X_train, Y_train),(X_test, Y_test)) = cifar10.load_data()
+X_train=X_train.reshape((X_train.shape[0], -1))
+X_test=X_test.reshape((X_test.shape[0], -1))
+X_train=X_train/255.0
+X_test=X_test/255.0
+
+lb=LabelBinarizer()
+Y_train = lb.fit_transform(Y_train)
+Y_test = lb.transform(Y_test)
+
+# Define the network architecture using Keras
+model = Sequential()
+model.add(Dense(64, input_shape=(3072,), activation="relu"))
+model.add(Dense(32, activation="relu"))
+model.add(Dense(10, activation="softmax"))
+
+# Train the model using Adam optimizer
+epochs=10
+model.compile(loss = "categorical_crossentropy", optimizer = "Adam", metrics = ["accuracy"])
+H = model.fit(X_train, Y_train, validation_data=(X_test, Y_test), epochs=epochs)
+
+# Evaluate the network
+predictions=model.predict(X_test)
+print(classification_report(Y_test.argmax(axis=1), predictions.argmax(axis=1), target_names=[str(x) for x in lb.classes_]))
+
+# Plot graphs
+plt.style.use("ggplot")
+plt.figure()
+plt.plot(np.arange(0,epochs),H.history["loss"],label="loss")
+plt.plot(np.arange(0,epochs),H.history["val_loss"],label="val_loss")
+plt.legend()
+plt.plot()
+
+plt.plot(np.arange(0,epochs),H.history["accuracy"],label="accuracy")
+plt.plot(np.arange(0,epochs),H.history["val_accuracy"],label="val_accuracy")
+plt.legend()
+plt.plot()
