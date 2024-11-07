@@ -48,3 +48,79 @@ plt.plot(np.arange(0,epochs),H.history["accuracy"],label="accuracy")
 plt.plot(np.arange(0,epochs),H.history["val_accuracy"],label="val_accuracy")
 plt.legend()
 plt.plot()
+
+
+
+""" This practical walks you through building a feedforward neural network for classifying images in the CIFAR-10 dataset using Keras and TensorFlow. Here’s a breakdown of each step, along with explanations and potential viva questions and answers.
+
+Practical Overview
+Step A: Importing the Necessary Packages
+This imports all the libraries required for data preprocessing, model building, training, and evaluation. Key packages include:
+
+TensorFlow and Keras for model creation and training.
+LabelBinarizer for one-hot encoding the target labels.
+Matplotlib for plotting the training loss and accuracy over epochs.
+Step B: Loading and Preprocessing the Data
+Dataset Loading: The CIFAR-10 dataset is loaded using cifar10.load_data(). This dataset contains 60,000 images across 10 classes, such as airplanes, cars, and birds. Each image is 32x32 pixels with three color channels (RGB).
+Flattening Images: CIFAR-10 images are reshaped from (32, 32, 3) to (3072,), converting each 32x32 RGB image into a 1D array of 3072 values (32 * 32 * 3 = 3072). This step is necessary for feedforward networks, which do not process spatial information like CNNs do.
+Normalizing Pixel Values: The pixel values are scaled between 0 and 1 by dividing by 255.0, which helps the model converge more quickly by keeping input values consistent.
+One-Hot Encoding the Labels: Using LabelBinarizer, the class labels are one-hot encoded to create 10-dimensional binary vectors for each class, enabling multi-class classification.
+Step C: Defining the Network Architecture
+The model is a simple feedforward neural network with fully connected layers:
+
+Input Layer: The input shape is set to 3072, corresponding to the flattened image size.
+First Dense Layer: This layer has 64 neurons with ReLU activation, which introduces non-linearity and allows the network to learn complex features.
+Second Dense Layer: This layer has 32 neurons with ReLU activation, further extracting and learning features from the input.
+Output Layer: This layer has 10 neurons (one per class) with softmax activation, converting the output to a probability distribution over the 10 classes.
+Step D: Training the Model
+Compiling the Model: The model is compiled using the Adam optimizer, which adapts the learning rate during training to optimize convergence. categorical_crossentropy is used as the loss function, which calculates the difference between the predicted and actual distributions for multi-class classification.
+Model Fitting: The model is trained on the training data for 10 epochs. The validation data is also provided, enabling the model to evaluate its accuracy on unseen data after each epoch.
+Step E: Evaluating the Network
+Model Predictions: After training, predictions are made on the test data using model.predict.
+Classification Report: A classification report is generated using classification_report, which provides metrics like precision, recall, and F1-score for each class. This report helps to understand how well the model distinguishes between each class.
+Step F: Plotting Training Loss and Accuracy
+Loss Plotting: The training and validation loss over epochs are plotted to visualize how well the model learns and generalizes.
+Accuracy Plotting: Similarly, the accuracy over epochs is plotted, helping to identify whether the model overfits or underfits based on the gap between training and validation accuracy.
+Summary of the Practical
+This implementation demonstrates building a feedforward neural network for image classification using the CIFAR-10 dataset. By preprocessing the data, defining the model’s architecture, training, and evaluating the model, this example showcases how fully connected layers can be used for image classification, even though they may not perform as well as convolutional networks for spatial data like images.
+
+Viva Questions and Suggested Answers
+Why do we reshape the CIFAR-10 images to (3072,)?
+
+Answer: CIFAR-10 images (32x32 RGB) are reshaped into a 1D array of 3072 values, as feedforward networks expect a 1D input. Unlike CNNs, feedforward networks do not require spatial information and treat each pixel as an independent input.
+What is the purpose of normalizing pixel values?
+
+Answer: Normalizing the pixel values between 0 and 1 ensures that inputs are in a consistent range, which stabilizes and speeds up training by preventing large gradients and reducing variance in the data.
+Explain the importance of one-hot encoding for the labels.
+
+Answer: One-hot encoding converts class labels into binary vectors, allowing the model to treat each class independently and calculate multi-class classification loss using categorical cross-entropy.
+What does the ReLU activation function do, and why is it used here?
+
+Answer: ReLU (Rectified Linear Unit) activation sets negative values to zero, introducing non-linearity and helping the model learn complex patterns. It also mitigates the vanishing gradient problem, improving training stability.
+Why do we use softmax in the output layer?
+
+Answer: Softmax converts the output values into probabilities that sum to 1, making it suitable for multi-class classification, where each output neuron represents the probability of a specific class.
+What is categorical cross-entropy, and why is it suitable here?
+
+Answer: Categorical cross-entropy measures the difference between the predicted probability distribution and the true distribution, making it ideal for multi-class classification by penalizing incorrect predictions proportionally.
+What is the role of the Adam optimizer, and why is it chosen?
+
+Answer: Adam is an adaptive optimizer that adjusts learning rates for each parameter based on past gradients, often resulting in faster convergence and better performance than basic SGD.
+Why do we plot the loss and accuracy over epochs?
+
+Answer: Plotting the loss and accuracy over epochs helps visualize the model’s learning process, showing how well it fits the training data and generalizes to unseen data, as indicated by the gap between training and validation curves.
+What might indicate overfitting or underfitting in the plotted graphs?
+
+Answer: If training accuracy is high but validation accuracy is much lower, the model may be overfitting. If both accuracies are low, the model might be underfitting, suggesting it lacks the complexity to learn the data.
+Why are feedforward neural networks generally not preferred for image data?
+
+Answer: Feedforward networks treat each pixel as an independent input, missing spatial patterns. Convolutional networks, however, capture local dependencies and spatial hierarchies, making them more effective for image data.
+Summary Explanation
+This practical demonstrates using a simple feedforward network for classifying CIFAR-10 images, a process that involves flattening images, defining a dense architecture, training the model, and evaluating it on unseen data. Feedforward networks are typically less effective for image tasks compared to CNNs, as they don’t preserve spatial relationships between pixels, but this practical provides insight into multi-class classification workflows in Keras.
+
+
+
+
+
+
+"""

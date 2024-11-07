@@ -48,4 +48,80 @@ plt.title("Training loss and accuracy")
 plt.xlabel("Epoch #")
 plt.ylabel("Loss / Accuracy")
 plt.legend()
-plt.plot()
+plt.plot()  
+
+
+
+
+""" 
+Here's a detailed overview of the practical and potential viva questions you may encounter based on this code. This includes explanations and summaries of each step.
+
+Practical Overview
+Importing the Necessary Packages:
+
+Key libraries are imported to handle the data, build and train the neural network, evaluate results, and visualize the training process.
+Keras and TensorFlow are the primary frameworks for creating and training the neural network.
+Loading the Training and Testing Data:
+
+The MNIST dataset is loaded using mnist.load_data(), providing grayscale images of handwritten digits (28x28 pixels) and their labels.
+Data Reshaping: The images are reshaped from (28, 28) to a flat 784-dimensional vector to match the input requirements of a fully connected neural network.
+Data Normalization: Each pixel value is scaled to be between 0 and 1 by dividing by 255.0, which helps the model learn more efficiently.
+One-Hot Encoding the Labels:
+
+LabelBinarizer converts each label (digit 0–9) to a one-hot encoded vector, making the data suitable for multi-class classification.
+Defining the Network Architecture:
+
+A simple feedforward neural network with three layers is created using Keras’s Sequential API:
+Layer 1: 128 neurons with sigmoid activation.
+Layer 2: 64 neurons with sigmoid activation.
+Output Layer: 10 neurons with softmax activation to classify each input as one of the 10 digits.
+Compiling and Training the Model:
+
+Stochastic Gradient Descent (SGD) is chosen as the optimizer, with a learning rate of 0.01.
+The model is trained for 11 epochs on mini-batches of size 128. Training includes validation on the test data to monitor performance on unseen data.
+Training History: H.history captures training and validation metrics (accuracy and loss) across epochs.
+Evaluating the Model:
+
+Predictions are made on the test data, and the classification_report displays metrics (precision, recall, F1-score) for each class (digit).
+Plotting Training Loss and Accuracy:
+
+A plot of training and validation loss and accuracy over each epoch provides insights into how well the model is learning.
+This helps identify issues like overfitting or underfitting by comparing the model’s performance on training and validation data.
+Viva Questions and Suggested Answers
+Here are some potential viva questions based on this code, along with summary answers:
+
+What is the purpose of flattening the images?
+
+Answer: Flattening the images (28x28 pixels) to a 784-dimensional vector is necessary because fully connected (dense) layers expect a 1D input vector. This reshaping ensures each pixel is treated as an individual feature input.
+Why do we normalize the pixel values?
+
+Answer: Normalizing the pixel values to a range of [0, 1] improves the model’s convergence speed and stability by reducing the scale of input features. It makes the data easier for the model to process and learn from.
+Why is one-hot encoding used for the labels?
+
+Answer: One-hot encoding is required for multi-class classification because it represents each label as a vector (0s and 1s) that matches the output layer size (10 neurons for digits 0–9). This format works well with categorical cross-entropy loss.
+Explain the architecture of this neural network.
+
+Answer: This network has three layers:
+An input layer with 128 neurons and sigmoid activation,
+A hidden layer with 64 neurons and sigmoid activation,
+An output layer with 10 neurons and softmax activation for class probabilities.
+What is the role of the softmax activation function in the output layer?
+
+Answer: Softmax normalizes the output of the final layer into probabilities that sum to 1, making it ideal for multi-class classification by indicating the likelihood of each class.
+Why do we use categorical cross-entropy as the loss function?
+
+Answer: Categorical cross-entropy measures the difference between predicted and actual label distributions in multi-class classification tasks, helping to minimize misclassification errors.
+How does Stochastic Gradient Descent (SGD) work, and why is it used here?
+
+Answer: SGD updates weights iteratively using a subset of data, leading to faster convergence and reduced memory usage compared to batch gradient descent. It’s used here because it efficiently handles large datasets like MNIST.
+What is the purpose of validation data during training?
+
+Answer: Validation data helps monitor the model's performance on unseen data during training, allowing detection of issues like overfitting (when the model performs well on training data but poorly on validation data).
+Why is it important to plot training and validation metrics?
+
+Answer: Plotting these metrics helps visualize the model’s learning progress and detect issues. For example, if validation loss diverges from training loss, it may indicate overfitting.
+Explain the output of classification_report.
+
+Answer: classification_report provides precision, recall, and F1-score for each class, offering detailed insights into how well the model performs on each digit (0–9).
+Summary Explanation
+This practical focuses on building, training, and evaluating a feedforward neural network for classifying the MNIST handwritten digits dataset. The workflow involves preparing data, defining the network, training it with SGD, and assessing its performance through classification metrics and plots. Key topics include data preprocessing, neural network architecture, activation functions, loss functions, SGD optimization, and evaluation metrics. Through plotting and analysis, this assignment also emphasizes the importance of visualizing training and validation metrics to ensure model effectiveness."""

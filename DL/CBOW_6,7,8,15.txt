@@ -83,3 +83,66 @@ print(pred)
 print(pred.argmax())
 
 print(idx2w.get(pred.argmax()))
+
+
+
+"""  This practical implements the Continuous Bag of Words (CBOW) model, a popular approach in natural language processing (NLP) to learn word embeddings. The CBOW model predicts a target word based on its surrounding context words, which helps capture semantic meanings of words in the document. Here is a detailed explanation of each step, followed by viva questions.
+
+Detailed Overview
+Step A: Data Preparation
+Input Text: A paragraph of text about virus transmission is given. It’s tokenized into a list of words for further processing.
+Data Cleaning: The code removes punctuation and converts all words to lowercase to ensure consistency in word representations.
+Step B: Generating Training Data
+Tokenization: The Tokenizer from Keras preprocesses the text. It assigns each unique word a numeric ID, creating w2idx (word-to-index mapping) and idx2w (index-to-word mapping).
+Numerical Conversion: Each word is converted to its corresponding index from w2idx for further model processing.
+Target and Context Word Generation:
+Context Window: Defined as two words before and two words after a target word (context size of 2).
+Target Words and Context Pairs: For each target word, the surrounding context words are gathered and stored in the context list, while the target list stores the target word index.
+Step C: Model Building and Training
+Model Architecture:
+Embedding Layer: The first layer is an embedding layer, which converts each word’s integer representation into a dense vector of size emd_size (embedding size).
+Lambda Layer: A Lambda layer computes the average (mean) of the context word embeddings, creating a combined context vector.
+Dense Layers: Two dense layers with ReLU activation add depth to the model. Finally, a softmax output layer is added to predict the probability distribution over the vocabulary for the target word.
+Model Compilation: The model uses SparseCategoricalCrossentropy as the loss function (appropriate for predicting a single class), adam optimizer, and accuracy metric.
+Model Training: The model is trained to predict the target word based on its context using 100 epochs.
+Step D: Prediction
+Testing: A sample input of words (test) is created for testing, which is converted to indices using w2idx. This input array is then passed through the trained model to get the prediction for the target word.
+Prediction Output:
+Prediction: The model predicts the target word by returning a probability distribution over all words in the vocabulary. The index with the highest probability is the predicted word.
+Word Retrieval: Using idx2w, the index is mapped back to the word, providing the final output.
+Summary of the Practical
+This CBOW model learns word embeddings by predicting a target word based on its context words in a sentence. This technique is valuable in NLP for learning semantic relationships, such as synonyms or words used in similar contexts. By training the model to predict words in context, the CBOW model learns word representations that capture the meaning of words relative to their surroundings.
+
+Viva Questions and Suggested Answers
+What is the CBOW model, and how does it work?
+
+Answer: The CBOW model is a word embedding model used in NLP. It predicts a target word based on its surrounding context words, learning to capture semantic meanings. The model learns to generate vectors (embeddings) that represent words with similar meanings closely.
+What is the difference between CBOW and Skip-gram?
+
+Answer: In CBOW, the context words are used to predict the target word, whereas in Skip-gram, the target word is used to predict the context words. CBOW is faster for large datasets, while Skip-gram performs better on small datasets.
+Why do we use word embeddings?
+
+Answer: Word embeddings convert words into dense vectors of fixed size, capturing semantic relationships and enabling models to handle text data. They help in reducing the dimensionality and complexity of textual data, making it easier for models to learn patterns.
+Why do we use the embedding layer in this model?
+
+Answer: The embedding layer converts word indices into dense vectors, capturing the meaning of words in a low-dimensional space. This dense representation allows the model to learn relationships between words more effectively than using sparse vectors.
+What is the purpose of the Lambda layer in this model?
+
+Answer: The Lambda layer computes the average (mean) of the context word embeddings. By averaging the embeddings, the model creates a single vector that represents the combined meaning of the context words for predicting the target word.
+What activation functions are used in the Dense layers, and why?
+
+Answer: ReLU activation is used in the hidden layers to introduce non-linearity, allowing the model to capture complex patterns. The softmax activation in the output layer produces a probability distribution over the vocabulary.
+Why is the loss function SparseCategoricalCrossentropy suitable for this model?
+
+Answer: SparseCategoricalCrossentropy is suitable because it computes the cross-entropy loss for integer-coded labels, matching our setup where target words are represented as integer indices.
+What is the role of the Tokenizer in this implementation?
+
+Answer: The Tokenizer preprocesses the text, assigning a unique integer to each word. This allows the model to work with numeric data rather than raw text, making it computationally efficient for training.
+How does the CBOW model help in understanding the context of a word?
+
+Answer: By training the model to predict a word based on its surrounding words, CBOW captures semantic meaning and relationships. Words with similar meanings appear in similar contexts, allowing the model to learn associations between them.
+Can this model generalize to unseen words or new documents? Why or why not?
+
+Answer: This specific model cannot generalize to unseen words, as it has a fixed vocabulary learned from the training data. However, it can apply learned embeddings to words in new documents if those words are present in the original vocabulary.
+Summary Explanation
+In this practical, the CBOW model is implemented for predicting words in context, learning embeddings that capture word meanings. The model uses an embedding layer to represent words in a dense space, followed by a Lambda layer to average context embeddings. The CBOW model provides insights into word semantics by identifying contextually related words, a foundation for many NLP tasks such as text classification and machine translation. """
